@@ -45,17 +45,17 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
-public class AutowiredFieldsIntoAllArgsConstructor extends Recipe {
+public class AutowiredFieldsIntoRequiredArgsConstructor extends Recipe {
     private static final String AUTOWIRED = "org.springframework.beans.factory.annotation.Autowired";
-    private static final String ALL_ARGS_CONSTRUCTOR = "lombok.AllArgsConstructor";
+    private static final String REQUIRED_ARGS_CONSTRUCTOR = "lombok.RequiredArgsConstructor";
     private static final AnnotationMatcher AUTOWIRED_MATCHER = new AnnotationMatcher("@" + AUTOWIRED);
 
     @Getter
-    final String displayName = "Replace `@Autowired` field injection with Lombok's `@AllArgsConstructor`";
+    final String displayName = "Replace `@Autowired` field injection with Lombok's `@RequiredArgsConstructor`";
 
     @Getter
     final String description = "Removes `@Autowired` from fields, makes them `final`, and adds Lombok's " +
-            "`@AllArgsConstructor` annotation to generate the constructor instead of relying on field injection. " +
+            "`@RequiredArgsConstructor` annotation to generate the constructor instead of relying on field injection. " +
             "Only applies to classes where every other field is either `static` or an already-initialized `final` " +
             "field, so that the constructor Lombok generates ends up with exactly the parameters that were " +
             "previously `@Autowired`.";
@@ -130,12 +130,12 @@ public class AutowiredFieldsIntoAllArgsConstructor extends Recipe {
                 maybeRemoveImport(AUTOWIRED);
                 cd = cd.withBody(cd.getBody().withStatements(newStatements));
 
-                maybeAddImport(ALL_ARGS_CONSTRUCTOR);
-                return JavaTemplate.builder("@AllArgsConstructor")
-                        .imports(ALL_ARGS_CONSTRUCTOR)
+                maybeAddImport(REQUIRED_ARGS_CONSTRUCTOR);
+                return JavaTemplate.builder("@RequiredArgsConstructor")
+                        .imports(REQUIRED_ARGS_CONSTRUCTOR)
                         .javaParser(JavaParser.fromJavaVersion().dependsOn(
                                 "package lombok;\n" +
-                                        "public @interface AllArgsConstructor {}"))
+                                        "public @interface RequiredArgsConstructor {}"))
                         .build()
                         .apply(updateCursor(cd), cd.getCoordinates().addAnnotation(comparing(J.Annotation::getSimpleName)));
             }

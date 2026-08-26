@@ -24,18 +24,14 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-class AutowiredFieldsIntoAllArgsConstructorTest implements RewriteTest {
+class AutowiredFieldsIntoRequiredArgsConstructorTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new AutowiredFieldsIntoAllArgsConstructor())
+        spec.recipe(new AutowiredFieldsIntoRequiredArgsConstructor())
           .parser(JavaParser.fromJavaVersion()
             .classpathFromResources(new InMemoryExecutionContext(), "spring-beans-5.+")
             .dependsOn(
-              """
-                package lombok;
-                public @interface AllArgsConstructor {}
-                """,
               """
                 package lombok;
                 public @interface RequiredArgsConstructor {}
@@ -45,7 +41,7 @@ class AutowiredFieldsIntoAllArgsConstructorTest implements RewriteTest {
 
     @DocumentExample
     @Test
-    void fieldIntoNewAllArgsConstructor() {
+    void fieldIntoNewRequiredArgsConstructor() {
         //language=java
         rewriteRun(
           java(
@@ -64,9 +60,9 @@ class AutowiredFieldsIntoAllArgsConstructorTest implements RewriteTest {
             """
               package demo;
 
-              import lombok.AllArgsConstructor;
+              import lombok.RequiredArgsConstructor;
 
-              @AllArgsConstructor
+              @RequiredArgsConstructor
               public class A {
 
                   private final String a;
@@ -103,9 +99,9 @@ class AutowiredFieldsIntoAllArgsConstructorTest implements RewriteTest {
             """
               package demo;
 
-              import lombok.AllArgsConstructor;
+              import lombok.RequiredArgsConstructor;
 
-              @AllArgsConstructor
+              @RequiredArgsConstructor
               public class A {
 
                   private final String a;
@@ -142,9 +138,9 @@ class AutowiredFieldsIntoAllArgsConstructorTest implements RewriteTest {
             """
               package demo;
 
-              import lombok.AllArgsConstructor;
+              import lombok.RequiredArgsConstructor;
 
-              @AllArgsConstructor
+              @RequiredArgsConstructor
               public class A {
 
                   private static final String CONST = "x";
